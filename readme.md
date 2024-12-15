@@ -111,11 +111,9 @@ Die folgenden Schritte sollen ausgeführt und im _git_-Repository versioniert un
 
 * **Konzeptuelles Datemmodell**: Analyse der bestehenden Daten in der Excel-Tabelle und MongoDB und Extrahierung eines konzeptuellen Datenmodells (z.B. ER-Diagramm) der Zieldatenbank.
 
-* **Logisches Datenmodell**: Anwenden der Transformationsregeln, um ein konzeptuellen Modell (Entity Relationship Model) in ein logisches Modell (Relationenmodell) umzuwandeln.
+* **Logisches Datenmodell**: Anwenden der Transformationsregeln, um ein konzeptuellen Modell (Entity Relationship Model) in ein logisches Modell (Relationenmodell) umzuwandeln. Berücksichtigen Sie dabei die Regeln der [*Datenbanknormalisierung* ](normalization.md) und stellen Sie sicher, dass die Datenbank in der dritten Normalform ist.
 
 * **Datenschutz**: Was ist erforderlich, um die betreffenden Daten verarbeiten und speichern zur dürfen? Aus Sicht des Datenschutzes: welche unterschiedlichen Arten von Daten liegen hier vor und wie müssen sie demnach geschützt werden? Welche Maßnahmen müssen ergriffen werden?
-
-* [**Normalisierung des Relationenmodells** ](normalization.md)bis zur dritten Normalform (bzw. Dokumentation an welchen Stellen und warum gegen eine Normalform bewusst verstoßen wurde)
 
 * **Erstellung des physischen Datenmodells** für die Ursprungsdaten und die Zieldatenbank Postgres (SQL-DDL, `CREATE TABLE...`)
 
@@ -123,6 +121,7 @@ Die folgenden Schritte sollen ausgeführt und im _git_-Repository versioniert un
 
 * **Erstellung eines Importskriptes II** für die Daten aus der MongoDB (Programmiersprache Ihrer Wahl) (SQL-DML `INSERT INTO ...`)
 
+* **Erstellung eines Importskriptes III** für die Daten aus der XML-Datei (Programmiersprache Ihrer Wahl) (SQL-DML `INSERT INTO ...`)
 
 
 
