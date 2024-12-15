@@ -3,7 +3,7 @@
 ### Ausgangslage:
 
 Ihr Unternehmen hat eine neue Kundin gewonnen: die _Let’s Meet GmbH_, die eine Dating- und Meeting-Plattform betreibt.
-Ihr Unternehmen soll die Dating-App der Kundin weiterentwickeln. Leider erfolgte die Trennung vom vorigen IT-Dienstleister im Streit und nicht reibungsfrei, sodass die Kundin keinen Zugriff auf die bestehenden Datenbanken hat. Es liegt lediglich ein Datenbank-Dump in Form einer Excel-Datei vor, die die Inhalte aller Tabellen erfasst.
+Ihr Unternehmen soll die Dating-App der Kundin weiterentwickeln. Leider erfolgte die Trennung vom vorigen IT-Dienstleister im Streit und nicht reibungsfrei, sodass die Kundin keinen Zugriff auf die bestehenden Datenbanken hat. Es liegt lediglich ein Datenbank-Dump in Form einer Excel-Datei vor, die die Inhalte aller Tabellen erfasst. Außerdem gibt es einen Backup einer MongoDB sowie eine XML-Datei mit einigen Daten.
 
 ![Ausschnitt aus "Tea with friends, and one must wear one's finest hat!" (public domain)](./images/tea-with-friends.png)
 Ihr Team ist für die Datenanalyse und den Entwurf der neuen Datenbank sowie die Migration in neue Tabellen zuständig. Die eigentliche App wird von einem anderen Team betreut.
@@ -12,7 +12,9 @@ Ausgangslage ist der vorliegende Export der Datenbank als Excel-Tabelle. Um Prob
 
 Daneben existieren auch Daten in einer NoSql-Datenbank (MongoDB). Hier sind Likes und Nachrichten hinterlegt, die aus einer anderen App stammen. Diese sollen ebenfalls in die neue Datenbank migriert werden.
 
-Alle genutzten SQL-Befehle und der Code sollen mit git versioniert werden. Dokumentieren Sie die durchgeführten Schritte bzw. die erstellten Diagramme, etc. jeweils in einer kurzen Markdown-Datei.
+Desweiteren sind Hobbydaten in einer XML-Datei vorhanden und sollen ebenfalls migriert werden.
+
+Alle genutzten SQL-Befehle und der Code für den Import sollen mit git versioniert werden. Dokumentieren Sie die durchgeführten Schritte bzw. die erstellten Diagramme, etc. jeweils in einer kurzen Markdown-Datei.
 
 Das Zielsystem soll ein Postgres in einem Docker-Container sein. Der Docker-Container wurde bereits in der [compose.yml](compose.yml) konfiguriert und kann mit *docker compose up* gestartet werden.
 
@@ -70,6 +72,21 @@ Die MongoDB-Datenbank speichert Benutzerdaten in der Sammlung `users`. Hier ein 
     "updatedAt": "2023-10-20T00:00:00"
 }
 ```
+### *Auszug der Daten - XML*
+Die XML-Datei speichert Hobbys der Benutzerinnen. Ein Beispiel für einen Benutzer in der XML-Datei sieht wie folgt aus:
+```xml
+<users>
+    <user>
+        <email>ursula.gehlen@d-ohnline.te</email>
+        <name>Gehlen, Ursula</name>
+        <hobby>Kochen</hobby>
+        <hobby>Gartenarbeit</hobby>
+        <hobby>Fotografie</hobby>
+    </user>
+</users>
+```
+
+
 ### Erweiterung der Datenbank
 
 Neben dem Import soll die Datenbank für folgende Anwendungsfälle eine Struktur bieten.
