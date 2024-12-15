@@ -105,7 +105,7 @@ Es wurde das unten abgedruckte Anwendungsfalldiagramm erstellt. Diese Anwendungs
 
 ## Hinweise und Anforderungen an die Realisierung
 
-Kleingruppen (2-4 Personen) sollen die Anpassungen planen, durchführen, jedes Zwischenergebnis testen und alle zugrundeliegenden Schritte dokumentieren. 
+Kleingruppen sollen die Anpassungen planen, durchführen, jedes Zwischenergebnis testen und alle zugrundeliegenden Schritte dokumentieren. 
 
 Die folgenden Schritte sollen ausgeführt und im _git_-Repository versioniert und dokumentiert werden:
 
