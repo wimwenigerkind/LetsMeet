@@ -1,0 +1,19 @@
+{
+  "name": "lets-meet-data-migration",
+  "version": "1.0.0",
+  "description": "Migration script for Let's Meet data from Excel, XML and MongoDB to PostgreSQL",
+  "main": "migrate.js",
+  "scripts": {
+    "migrate": "node migrate.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5",
+    "xml2js": "^0.6.2",
+    "mongodb": "^6.3.0",
+    "pg": "^8.11.3"
+  },
+  "keywords": ["migration", "postgresql", "mongodb", "excel", "xml"],
+  "author": "",
+  "license": "MIT"
+}
