@@ -1,0 +1,109 @@
+// Let's Meet Dating Platform - ER Diagram
+// Use this at https://dbdiagram.io/d
+
+Table users {
+  id int [pk, increment]
+  email varchar(255) [unique, not null]
+  password varchar(255)
+  first_name varchar(100) [not null]
+  last_name varchar(100) [not null]
+  phone_number varchar
+  gender varchar(20) // m, w, nicht_binär
+  preferred_gender varchar (20)
+  birth_date date
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    email
+    (first_name, last_name)
+  }
+}
+
+Table addresses {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  street varchar(200)
+  house_number varchar(20)
+  postal_code varchar(10)
+  city varchar(100)
+  is_primary boolean [default: false]
+  created_at timestamp [default: `now()`]
+}
+
+Table hobbies {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  name varchar
+  rating int // -100 to 100 for future matching
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (user_id) [unique]
+    rating
+  }
+}
+
+Table friendships {
+  id int [pk, increment]
+  user_id_1 int [ref: > users.id]
+  user_id_2 int [ref: > users.id]
+  status varchar(20) [default: 'pending'] // pending, accepted, blocked
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    (user_id_1, user_id_2) [unique]
+    status
+  }
+}
+
+Table likes {
+  id int [pk, increment]
+  liker_user_id int [ref: > users.id]
+  liked_user_id int [ref: > users.id]
+  status varchar(20) [default: 'pending'] // pending, accepted, rejected
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    (liker_user_id, liked_user_id) [unique]
+    status
+    created_at
+  }
+}
+
+Table conversations {
+  id int [pk, increment]
+  created_at timestamp [default: `now()`]
+  users int [ref: <> users.id]
+}
+
+Table messages {
+  id int [pk, increment]
+  conversation_id int [ref: > conversations.id]
+  sender_user_id int [ref: > users.id]
+  message_text text [not null]
+  sent_at timestamp [default: `now()`]
+
+  indexes {
+    conversation_id
+    sender_user_id
+    sent_at
+  }
+}
+
+Table user_photos {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  photo_data blob // For storing image directly
+  photo_url varchar(500) // Alternative: URL to external storage
+  is_profile_picture boolean [default: false]
+  file_name varchar(255)
+  file_size int
+  uploaded_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    is_profile_picture
+  }
+}
