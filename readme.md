@@ -123,6 +123,8 @@ Die folgenden Schritte sollen ausgeführt und im _git_-Repository versioniert un
 
 * **Erstellung eines Importskriptes III** für die Daten aus der XML-Datei (Programmiersprache Ihrer Wahl) (SQL-DML `INSERT INTO ...`)
 
+* **Erstellung von "Tests"** Nach der Migration der Daten sollen alle Zwischenergebnisse durch SQL-Abfragen überprüft werden. Suchen Sie geeignete Daten um zu überprüfen, ob der Import erfolgreich war und erstellen Sie entsprechende SQL-Abfragen!
+
 
 
 # Technische Hinweise für die Realisierung
@@ -217,11 +219,8 @@ Um auf die MongoDB in VS Code zuzugreifen, benötigen Sie die MongoDB-Erweiterun
       import_excel.py
       import_mongodb.py
       import_xml.py
+      tests.sql
   ```
 
 ---
-
-## Testen
-
-Nach der Migration der Daten sollten alle Zwischenergebnisse durch SQL-Abfragen überprüft werden. Testen Sie die Konsistenz und Integrität der Daten anhand des konzeptuellen und logischen Modells.
 
