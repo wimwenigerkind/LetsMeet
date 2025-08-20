@@ -7,7 +7,7 @@ const { Pool } = require('pg');
 // PostgreSQL connection
 const pgPool = new Pool({
   host: 'localhost',
-  port: 5433,
+  port: 5432,
   user: 'user',
   password: 'secret',
   database: 'lf8_lets_meet_db'
