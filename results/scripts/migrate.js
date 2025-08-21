@@ -25,7 +25,6 @@ async function main() {
 
     } catch (error) {
         console.error('Error while migrating to PostgreSQL database:', error);
-        return;
     } finally {
         await pgPool.end();
     }
