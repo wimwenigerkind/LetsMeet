@@ -101,10 +101,10 @@ async function importMongoData(emailToUserID) {
     }
 }
 
-async function insertLike(userID, likeduserID,likeStatus, timestamp) {
+async function insertLike(liker_user_id, liked_user_id,status, timestamp) {
     await pgClient.query(
-        "INSERT INTO likes (userID,likedUserID, likedStatus, createdAt, updatedAt) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (liker_user_id, liked_user_id) DO NOTHING"
-        , [likerUserID, likedUserID, likeStatus, timestamp, timestamp]);
+        "INSERT INTO likes (liker_user_id,liked_user_id, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (liker_user_id, liked_user_id) DO NOTHING"
+        , [liker_user_id, liked_user_id, status, timestamp, timestamp]);
 }
 
 async function conversationExist(conversationID){
