@@ -1,0 +1,489 @@
+### Let's Meet API - HTTP Client Requests
+### Base URL
+@baseUrl = http://localhost:3000/api
+
+###############################################################################
+### HEALTH CHECK & API INFO
+###############################################################################
+
+### Health Check
+GET http://localhost:3000/health
+
+### API Documentation
+GET http://localhost:3000/api
+
+###############################################################################
+### USERS - User Management
+###############################################################################
+
+### Get all users
+GET {{baseUrl}}/users
+
+### Get all users with filters
+GET {{baseUrl}}/users?gender=w&city=Berlin&hobby=Fotografie
+
+### Get user by ID
+GET {{baseUrl}}/users/1
+
+### Create new user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "max.mustermann@example.com",
+  "password": "secure123",
+  "first_name": "Max",
+  "last_name": "Mustermann",
+  "phone_number": "+49123456789",
+  "gender": "m",
+  "preferred_gender": "w",
+  "birth_date": "1990-05-15"
+}
+
+### Create another user (for testing relationships)
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "anna.schmidt@example.com",
+  "password": "secure456",
+  "first_name": "Anna",
+  "last_name": "Schmidt",
+  "phone_number": "+49987654321",
+  "gender": "w",
+  "preferred_gender": "m",
+  "birth_date": "1992-08-20"
+}
+
+### Update user
+PUT {{baseUrl}}/users/1
+Content-Type: application/json
+
+{
+  "first_name": "Maximilian",
+  "phone_number": "+49111222333",
+  "gender": "m"
+}
+
+### Delete user
+DELETE {{baseUrl}}/users/1
+
+### Add address for user
+POST {{baseUrl}}/users/1/address
+Content-Type: application/json
+
+{
+  "street": "Musterstraße",
+  "house_number": "123",
+  "postal_code": "12345",
+  "city": "Berlin"
+}
+
+### Find users with similar interests
+GET {{baseUrl}}/users/1/similar
+
+###############################################################################
+### HOBBIES - Hobby Management & Prioritization
+###############################################################################
+
+### Get all hobbies for a user
+GET {{baseUrl}}/hobbies/user/1
+
+### Add hobby for user (high rating - likes it)
+POST {{baseUrl}}/hobbies/user/1
+Content-Type: application/json
+
+{
+  "name": "Fotografie",
+  "rating": 85
+}
+
+### Add hobby for user (negative rating - dislikes it)
+POST {{baseUrl}}/hobbies/user/1
+Content-Type: application/json
+
+{
+  "name": "Extremsport",
+  "rating": -60
+}
+
+### Add more hobbies for user 1
+POST {{baseUrl}}/hobbies/user/1
+Content-Type: application/json
+
+{
+  "name": "Kochen",
+  "rating": 90
+}
+
+### Add hobbies for user 2 (to test compatibility)
+POST {{baseUrl}}/hobbies/user/2
+Content-Type: application/json
+
+{
+  "name": "Fotografie",
+  "rating": 75
+}
+
+### Add more hobbies for user 2
+POST {{baseUrl}}/hobbies/user/2
+Content-Type: application/json
+
+{
+  "name": "Reisen",
+  "rating": 95
+}
+
+### Update hobby rating
+PUT {{baseUrl}}/hobbies/1
+Content-Type: application/json
+
+{
+  "rating": 100
+}
+
+### Delete hobby
+DELETE {{baseUrl}}/hobbies/1
+
+### Get hobbies statistics
+GET {{baseUrl}}/hobbies/stats
+
+### Find users by hobby interest (minimum rating 50)
+GET {{baseUrl}}/hobbies/interest/Fotografie?minRating=50
+
+### Get hobby compatibility between two users
+GET {{baseUrl}}/hobbies/compatibility/1/2
+
+###############################################################################
+### FRIENDSHIPS - Friend Management
+###############################################################################
+
+### Get all friendships for a user
+GET {{baseUrl}}/friendships/user/1
+
+### Get pending friend requests only
+GET {{baseUrl}}/friendships/user/1?status=pending
+
+### Send friend request
+POST {{baseUrl}}/friendships/user/1/request
+Content-Type: application/json
+
+{
+  "user_id_2": 2
+}
+
+### Accept friend request
+PUT {{baseUrl}}/friendships/1/status
+Content-Type: application/json
+
+{
+  "status": "accepted"
+}
+
+### Reject friend request
+PUT {{baseUrl}}/friendships/1/status
+Content-Type: application/json
+
+{
+  "status": "rejected"
+}
+
+### Remove friendship
+DELETE {{baseUrl}}/friendships/1
+
+### Get mutual friends between two users
+GET {{baseUrl}}/friendships/mutual/1/2
+
+### Get friend suggestions for user
+GET {{baseUrl}}/friendships/suggestions/1?limit=5
+
+###############################################################################
+### PHOTOS - Photo Management & Upload
+###############################################################################
+
+### Get all photos for a user
+GET {{baseUrl}}/photos/user/1
+
+### Add photo by URL
+POST {{baseUrl}}/photos/user/1/url
+Content-Type: application/json
+
+{
+  "url": "https://images.wimwenigerkind.com/wimwenigerkind-transparent-icon.png",
+  "is_profile_picture": false
+}
+
+### Add profile picture by URL
+POST {{baseUrl}}/photos/user/1/url
+Content-Type: application/json
+
+{
+  "url": "https://images.wimwenigerkind.com/wimwenigerkind-transparent-icon.png",
+  "is_profile_picture": true
+}
+
+### Set existing photo as profile picture
+PUT {{baseUrl}}/photos/1/profile
+
+### Get photo data (serves the actual image)
+GET {{baseUrl}}/photos/1/data
+
+### Delete photo
+DELETE {{baseUrl}}/photos/1
+
+### Upload photo (multipart form data)
+# POST {{baseUrl}}/photos/user/1/upload
+# Content-Type: multipart/form-data
+# 
+# photo=@path/to/your/image.jpg
+# is_profile_picture=true
+
+###############################################################################
+### MESSAGES - Chat & Conversation System
+###############################################################################
+
+### Get conversations for a user
+GET {{baseUrl}}/messages/conversations/user/1
+
+### Create new conversation
+POST {{baseUrl}}/messages/conversations
+Content-Type: application/json
+
+{
+  "participants": [1, 2]
+}
+
+### Get messages in a conversation
+GET {{baseUrl}}/messages/conversation/1?limit=20&offset=0
+
+### Send message
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "conversation_id": 1,
+  "sender_user_id": 1,
+  "message_text": "Hallo! Wie geht es dir?"
+}
+
+### Send another message
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "conversation_id": 1,
+  "sender_user_id": 2,
+  "message_text": "Hallo! Mir geht es gut, danke! Wie findest du Fotografie?"
+}
+
+### Delete message
+DELETE {{baseUrl}}/messages/1
+Content-Type: application/json
+
+{
+  "user_id": 1
+}
+
+### Search messages
+GET {{baseUrl}}/messages/search?q=Fotografie&user_id=1
+
+###############################################################################
+### LIKES - Dating & Match System
+###############################################################################
+
+### Get likes given by user
+GET {{baseUrl}}/likes/user/1/given
+
+### Get likes received by user
+GET {{baseUrl}}/likes/user/1/received
+
+### Like a user
+POST {{baseUrl}}/likes
+Content-Type: application/json
+
+{
+  "liker_user_id": 1,
+  "liked_user_id": 2
+}
+
+### Like back (creates a match!)
+POST {{baseUrl}}/likes
+Content-Type: application/json
+
+{
+  "liker_user_id": 2,
+  "liked_user_id": 1
+}
+
+### Get matches for user
+GET {{baseUrl}}/likes/user/1/matches
+
+### Remove a like
+DELETE {{baseUrl}}/likes/1
+
+### Get like statistics
+GET {{baseUrl}}/likes/stats
+
+###############################################################################
+### COMPLEX WORKFLOW EXAMPLES
+###############################################################################
+
+### 1. Complete User Registration Flow
+### Create user -> Add address -> Add hobbies -> Upload photo
+
+# Step 1: Create user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "workflow@example.com",
+  "password": "test123",
+  "first_name": "Test",
+  "last_name": "User",
+  "gender": "w",
+  "birth_date": "1995-01-01"
+}
+
+# Step 2: Add address (use user ID from response)
+POST {{baseUrl}}/users/3/address
+Content-Type: application/json
+
+{
+  "street": "Teststraße",
+  "house_number": "456",
+  "postal_code": "54321",
+  "city": "München"
+}
+
+# Step 3: Add hobbies
+POST {{baseUrl}}/hobbies/user/3
+Content-Type: application/json
+
+{
+  "name": "Lesen",
+  "rating": 80
+}
+
+### 2. Dating Flow: Like -> Match -> Start Conversation
+
+# User 1 likes User 2
+POST {{baseUrl}}/likes
+Content-Type: application/json
+
+{
+  "liker_user_id": 1,
+  "liked_user_id": 2
+}
+
+# User 2 likes User 1 back (Match!)
+POST {{baseUrl}}/likes
+Content-Type: application/json
+
+{
+  "liker_user_id": 2,
+  "liked_user_id": 1
+}
+
+# Start conversation after match
+POST {{baseUrl}}/messages/conversations
+Content-Type: application/json
+
+{
+  "participants": [1, 2]
+}
+
+# Send first message
+POST {{baseUrl}}/messages
+Content-Type: application/json
+
+{
+  "conversation_id": 1,
+  "sender_user_id": 1,
+  "message_text": "Hi! Wir haben einen Match! 🎉"
+}
+
+### 3. Friendship Flow: Request -> Accept -> Message
+
+# Send friend request
+POST {{baseUrl}}/friendships/user/1/request
+Content-Type: application/json
+
+{
+  "user_id_2": 3
+}
+
+# Accept friend request
+PUT {{baseUrl}}/friendships/2/status
+Content-Type: application/json
+
+{
+  "status": "accepted"
+}
+
+### 4. Discovery Flow: Find similar users -> Check compatibility
+
+# Find users similar to user 1
+GET {{baseUrl}}/users/1/similar
+
+# Check hobby compatibility
+GET {{baseUrl}}/hobbies/compatibility/1/2
+
+# Find users interested in specific hobby
+GET {{baseUrl}}/hobbies/interest/Fotografie?minRating=70
+
+###############################################################################
+### TESTING & VALIDATION EXAMPLES
+###############################################################################
+
+### Test validation errors
+
+# Invalid email
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "password": "test",
+  "first_name": "Test",
+  "last_name": "User"
+}
+
+# Invalid hobby rating (out of range)
+POST {{baseUrl}}/hobbies/user/1
+Content-Type: application/json
+
+{
+  "name": "Test",
+  "rating": 150
+}
+
+# Self-like (should fail)
+POST {{baseUrl}}/likes
+Content-Type: application/json
+
+{
+  "liker_user_id": 1,
+  "liked_user_id": 1
+}
+
+###############################################################################
+### ADMIN & STATS ENDPOINTS
+###############################################################################
+
+### Get all hobby statistics
+GET {{baseUrl}}/hobbies/stats
+
+### Get like statistics
+GET {{baseUrl}}/likes/stats
+
+### Get all users (admin view)
+GET {{baseUrl}}/users
+
+###############################################################################
+# NOTES:
+# 1. Replace user IDs (1, 2, 3) with actual IDs from your database
+# 2. For file uploads, uncomment and modify the multipart request
+# 3. Some endpoints require existing data (users, conversations, etc.)
+# 4. Check server logs for detailed error messages
+# 5. Use the health check endpoint to verify server status
+###############################################################################
