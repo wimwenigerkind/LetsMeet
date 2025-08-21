@@ -344,7 +344,7 @@ Content-Type: application/json
   "birth_date": "1995-01-01"
 }
 
-# Step 2: Add address (use user ID from response)
+### Step 2: Add address (use user ID from response)
 POST {{baseUrl}}/users/3/address
 Content-Type: application/json
 
@@ -355,7 +355,7 @@ Content-Type: application/json
   "city": "München"
 }
 
-# Step 3: Add hobbies
+### Step 3: Add hobbies
 POST {{baseUrl}}/hobbies/user/3
 Content-Type: application/json
 
@@ -375,7 +375,7 @@ Content-Type: application/json
   "liked_user_id": 2
 }
 
-# User 2 likes User 1 back (Match!)
+### User 2 likes User 1 back (Match!)
 POST {{baseUrl}}/likes
 Content-Type: application/json
 
@@ -384,7 +384,7 @@ Content-Type: application/json
   "liked_user_id": 1
 }
 
-# Start conversation after match
+### Start conversation after match
 POST {{baseUrl}}/messages/conversations
 Content-Type: application/json
 
@@ -392,7 +392,7 @@ Content-Type: application/json
   "participants": [1, 2]
 }
 
-# Send first message
+### Send first message
 POST {{baseUrl}}/messages
 Content-Type: application/json
 
@@ -412,7 +412,7 @@ Content-Type: application/json
   "user_id_2": 3
 }
 
-# Accept friend request
+### Accept friend request
 PUT {{baseUrl}}/friendships/2/status
 Content-Type: application/json
 
@@ -448,7 +448,7 @@ Content-Type: application/json
   "last_name": "User"
 }
 
-# Invalid hobby rating (out of range)
+### Invalid hobby rating (out of range)
 POST {{baseUrl}}/hobbies/user/1
 Content-Type: application/json
 
@@ -457,7 +457,7 @@ Content-Type: application/json
   "rating": 150
 }
 
-# Self-like (should fail)
+### Self-like (should fail)
 POST {{baseUrl}}/likes
 Content-Type: application/json
 
