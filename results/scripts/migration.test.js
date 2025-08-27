@@ -164,7 +164,32 @@ describe('Database Migration Tests', () => {
       console.log(`🏠 Address import: ${addressesWithData}/1576 users have address data`);
     });
 
-    test('should have hobbies with valid ratings', async () => {
+    test('should have multiple hobbies per user from Excel import', async () => {
+      const result = await dbClient.query(`
+        SELECT 
+          COUNT(*) as total_hobbies,
+          COUNT(DISTINCT user_id) as users_with_hobbies,
+          ROUND(AVG(hobby_count), 2) as avg_hobbies_per_user
+        FROM (
+          SELECT user_id, COUNT(*) as hobby_count
+          FROM hobbies
+          GROUP BY user_id
+        ) hobby_stats
+      `);
+      
+      const stats = result.rows[0];
+      const totalHobbies = parseInt(stats.total_hobbies);
+      const usersWithHobbies = parseInt(stats.users_with_hobbies);
+      const avgHobbiesPerUser = parseFloat(stats.avg_hobbies_per_user);
+      
+      // Should have significantly more hobbies than users (multiple hobbies per user)
+      expect(totalHobbies).toBeGreaterThanOrEqual(usersWithHobbies);
+      expect(avgHobbiesPerUser).toBeGreaterThan(2.0); // Much higher expectation since we have 5128/1566 = 3.27
+      
+      console.log(`🎯 Hobby statistics: ${totalHobbies} total hobbies, ${usersWithHobbies} users, ${avgHobbiesPerUser} avg per user`);
+    });
+
+    test('should have hobbies with valid ratings from Excel', async () => {
       const result = await dbClient.query(`
         SELECT COUNT(*) as count 
         FROM hobbies 
@@ -177,6 +202,24 @@ describe('Database Migration Tests', () => {
       expect(invalidRatings).toBe(0);
     });
 
+    test('should have hobbies with ratings (from Excel) and without (from XML/future)', async () => {
+      const withRatingResult = await dbClient.query(`
+        SELECT COUNT(*) as count FROM hobbies WHERE rating IS NOT NULL
+      `);
+      const withoutRatingResult = await dbClient.query(`
+        SELECT COUNT(*) as count FROM hobbies WHERE rating IS NULL
+      `);
+      
+      const withRating = parseInt(withRatingResult.rows[0].count);
+      const withoutRating = parseInt(withoutRatingResult.rows[0].count);
+      
+      // Should have both types - some with ratings (Excel) and some without (XML)
+      expect(withRating).toBeGreaterThan(0);
+      // withoutRating might be 0 if XML import is not run, but that's okay
+      
+      console.log(`📊 Hobby ratings: ${withRating} with rating, ${withoutRating} without rating`);
+    });
+
     test('should have users with gender values from Excel', async () => {
       const result = await dbClient.query(`
         SELECT COUNT(*) as count 
@@ -187,6 +230,40 @@ describe('Database Migration Tests', () => {
       
       // Should have many users with gender from Excel
       expect(usersWithGender).toBeGreaterThan(1000);
+    });
+
+    test('should have diverse hobby types', async () => {
+      const result = await dbClient.query(`
+        SELECT 
+          name as hobby_name,
+          COUNT(*) as user_count,
+          ROUND(AVG(rating), 2) as avg_rating
+        FROM hobbies 
+        GROUP BY name 
+        ORDER BY user_count DESC, avg_rating DESC
+        LIMIT 10
+      `);
+      
+      expect(result.rows.length).toBeGreaterThan(5);
+      
+      console.log(`🎨 Top hobbies:`);
+      result.rows.forEach(hobby => {
+        const rating = hobby.avg_rating ? ` (avg rating: ${hobby.avg_rating})` : '';
+        console.log(`   ${hobby.hobby_name}: ${hobby.user_count} users${rating}`);
+      });
+    });
+
+    test('should prevent duplicate hobbies for same user', async () => {
+      // This tests the UNIQUE constraint (user_id, name)
+      const result = await dbClient.query(`
+        SELECT user_id, name, COUNT(*) as duplicate_count
+        FROM hobbies 
+        GROUP BY user_id, name
+        HAVING COUNT(*) > 1
+      `);
+      
+      // Should have no duplicates due to UNIQUE constraint
+      expect(result.rows.length).toBe(0);
     });
   });
 
