@@ -1,7 +1,7 @@
 // index.js
 import createTables from "./create_tables.js";
 import importMongoData from "./importMongo.js";
-// import importExcelData from "./importExcel.js";   // kannst du später ergänzen
+import importExcelData from "./importExcel.js";
 // import importXmlData from "./importXml.js";       // kannst du später ergänzen
 import pgClient from "./db.js";
 
@@ -16,9 +16,9 @@ async function main() {
         console.log("📥 Importing MongoDB data...");
         await importMongoData();
 
-        // Schritt 3: Excel (future)
-        // console.log("📥 Importing Excel data...");
-        // await importExcelData();
+        // Schritt 3: Excel import
+        console.log("📊 Importing Excel data...");
+        await importExcelData();
 
         // Schritt 4: XML (future)
         // console.log("📥 Importing XML data...");

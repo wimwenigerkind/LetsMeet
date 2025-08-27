@@ -5,12 +5,16 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "create-tables": "node create_tables.js",
+    "import-mongo": "node importMongo.js",
+    "import-excel": "node importExcel.js"
   },
   "dependencies": {
     "pg": "^8.16.3",
     "mongodb": "^6.0.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "xlsx": "^0.18.5"
   },
   "license": "MIT"
 }
