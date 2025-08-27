@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
+    "test": "node test.js",
     "create-tables": "node create_tables.js",
     "import-mongo": "node importMongo.js",
     "import-excel": "node importExcel.js"
@@ -16,11 +17,5 @@
     "dotenv": "^16.0.0",
     "xlsx": "^0.18.5"
   },
-
-  "scripts": {
-    "start": "node index.js",
-    "test": "node test.js"
-  }
-}
   "license": "MIT"
 }
