@@ -44,7 +44,7 @@ async function importXmlData() {
 
         const userId = userRes.rows[0].id;
 
-        // Hobbies einfügen
+        // Hobbies einfügen (mehrere pro User möglich)
         for (const h of hobbies) {
             const hobbyName = Array.isArray(h) ? h[0] : h;
 
@@ -54,13 +54,15 @@ async function importXmlData() {
                 const res = await pgClient.query(
                     `INSERT INTO hobbies (user_id, name, created_at)
                      VALUES ($1, $2, NOW())
-                     ON CONFLICT (user_id) DO UPDATE 
-                       SET name = EXCLUDED.name,
-                           created_at = NOW()`,
+                     ON CONFLICT (user_id, name) DO NOTHING`,
                     [userId, hobbyName]
                 );
-                console.log(`➕ Added hobby '${hobbyName}' for user ${email}`);
-                hobbyCount++;
+                if (res.rowCount > 0) {
+                    console.log(`➕ Added hobby '${hobbyName}' for user ${email}`);
+                    hobbyCount++;
+                } else {
+                    console.log(`⚠️ Hobby '${hobbyName}' already exists for user ${email}`);
+                }
             } catch (err) {
                 console.error(`❌ Failed to insert hobby ${hobbyName} for user ${email}:`, err.message);
             }
