@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 async function importXmlData() {
     // Pfad zur XML-Datei im Projekt-Root
-    const xmlFilePath = path.join(__dirname, "../../lets_meet_hobbies.xml");
+    const xmlFilePath = path.join(__dirname, "../../Lets_Meet_Hobbies.xml");
 
     if (!fs.existsSync(xmlFilePath)) {
         throw new Error(`XML file not found: ${xmlFilePath}`);
@@ -51,15 +51,15 @@ async function importXmlData() {
             if (!hobbyName) continue; // leere Hobbies überspringen
 
             try {
-                await pgClient.query(
-                    `INSERT INTO hobbies (user_id, name)
-                     VALUES ($1, $2)
-                         ON CONFLICT (user_id, name) DO NOTHING`,
+                const res = await pgClient.query(
+                    `INSERT INTO hobbies (user_id, name, created_at)
+                     VALUES ($1, $2, NOW())
+                     ON CONFLICT (user_id) DO UPDATE 
+                       SET name = EXCLUDED.name,
+                           created_at = NOW()`,
                     [userId, hobbyName]
                 );
-                if (res.rowCount > 0) {
-                    console.log(`🔄 Updated or inserted hobby '${hobbyName}' for user ID ${userId}`);
-                }
+                console.log(`➕ Added hobby '${hobbyName}' for user ${email}`);
                 hobbyCount++;
             } catch (err) {
                 console.error(`❌ Failed to insert hobby ${hobbyName} for user ${email}:`, err.message);
