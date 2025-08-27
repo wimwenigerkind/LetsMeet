@@ -25,7 +25,7 @@ function validateNumericEnvVar(name, defaultValue = null) {
 export const config = {
     postgres: {
         host: validateEnvVar('PG_HOST', 'localhost'),
-        port: validateNumericEnvVar('PG_PORT', 5432),
+        port: validateNumericEnvVar('PG_PORT', 5433),
         user: validateEnvVar('PG_USER', 'user'),
         password: validateEnvVar('PG_PASS', 'secret'),
         database: validateEnvVar('PG_DB', 'lf8_lets_meet_db'),
