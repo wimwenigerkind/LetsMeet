@@ -88,7 +88,7 @@ CREATE INDEX ON "users" ("email");
 
 CREATE INDEX ON "users" ("first_name", "last_name");
 
-CREATE UNIQUE INDEX ON "hobbies" ("user_id");
+CREATE UNIQUE INDEX ON "hobbies" ("user_id", "name");
 
 CREATE INDEX ON "hobbies" ("rating");
 
