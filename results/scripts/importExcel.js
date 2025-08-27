@@ -126,9 +126,9 @@ async function insertHobby(userId, hobbyData) {
         await pgClient.query(
             `INSERT INTO hobbies (user_id, name, rating, created_at)
              VALUES ($1, $2, $3, $4)
-             ON CONFLICT (user_id) DO UPDATE 
-               SET name = EXCLUDED.name,
-                   rating = EXCLUDED.rating`,
+             ON CONFLICT (user_id, name) DO UPDATE 
+               SET rating = EXCLUDED.rating,
+                   created_at = EXCLUDED.created_at`,
             [
                 userId,
                 hobbyData.name,
@@ -394,11 +394,12 @@ async function importExcelData() {
                     addressCount++;
                 }
                 
-                // Insert hobbies if data exists
+                // Insert ALL hobbies if data exists
                 if (userData.hobbies && userData.hobbies.length > 0) {
-                    // Insert the first hobby (we can only store one per user due to unique constraint)
-                    await insertHobby(userId, userData.hobbies[0]);
-                    hobbyCount++;
+                    for (const hobby of userData.hobbies) {
+                        await insertHobby(userId, hobby);
+                        hobbyCount++;
+                    }
                 }
                 
                 // Progress logging
