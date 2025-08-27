@@ -13,31 +13,41 @@ function splitName(fullName) {
 }
 
 async function insertUser(email, fullName, phone, createdAt, updatedAt) {
-    const { first, last } = splitName(fullName);
-    const res = await pgClient.query(
-        `INSERT INTO users (email, first_name, last_name, phone_number, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5, $6)
-     ON CONFLICT (email) DO UPDATE 
-       SET first_name = EXCLUDED.first_name,
-           last_name = EXCLUDED.last_name,
-           phone_number = EXCLUDED.phone_number,
-           updated_at = EXCLUDED.updated_at
-     RETURNING id`,
-        [email, first, last, phone, createdAt, updatedAt]
-    );
-    return res.rows[0].id;
+    try {
+        const { first, last } = splitName(fullName);
+        const res = await pgClient.query(
+            `INSERT INTO users (email, first_name, last_name, phone_number, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         ON CONFLICT (email) DO UPDATE 
+           SET first_name = EXCLUDED.first_name,
+               last_name = EXCLUDED.last_name,
+               phone_number = EXCLUDED.phone_number,
+               updated_at = EXCLUDED.updated_at
+         RETURNING id`,
+            [email, first, last, phone, createdAt, updatedAt]
+        );
+        return res.rows[0].id;
+    } catch (error) {
+        console.error(`❌ Failed to insert/update user ${email}:`, error.message);
+        throw error;
+    }
 }
 
 /**
  * Insert a like relation.
  */
 async function insertLike(likerId, likedId, status, timestamp) {
-    await pgClient.query(
-        `INSERT INTO likes (liker_user_id, liked_user_id, status, created_at, updated_at)
-     VALUES ($1, $2, $3, $4, $5)
-     ON CONFLICT (liker_user_id, liked_user_id) DO NOTHING`,
-        [likerId, likedId, status, timestamp, timestamp]
-    );
+    try {
+        await pgClient.query(
+            `INSERT INTO likes (liker_user_id, liked_user_id, status, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (liker_user_id, liked_user_id) DO NOTHING`,
+            [likerId, likedId, status, timestamp, timestamp]
+        );
+    } catch (error) {
+        console.error(`❌ Failed to insert like from ${likerId} to ${likedId}:`, error.message);
+        throw error;
+    }
 }
 
 /**
@@ -106,25 +116,44 @@ async function insertFriendship(userId1, userId2, status, createdAt) {
  */
 async function importMongoData() {
     const emailToUserID = new Map();
-    const mongoClient = new MongoClient("mongodb://localhost:27017");
+    const mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017";
+    const mongoClient = new MongoClient(mongoUrl);
 
+    console.log(`🔗 Connecting to MongoDB: ${mongoUrl}`);
+    
     try {
         await mongoClient.connect();
+        console.log("✅ Connected to MongoDB");
+        
         const db = mongoClient.db("LetsMeet");
         const collection = db.collection("users");
         const users = await collection.find({}).toArray();
+        
+        console.log(`📊 Found ${users.length} users in MongoDB`);
 
-        // 1. Alle Users übernehmen
+        // 1. Import all users
+        console.log("👥 Importing users...");
+        let userCount = 0;
         for (const u of users) {
-            const id = await insertUser(
-                u._id,              // email als ID
-                u.name,
-                u.phone || null,
-                u.createdAt || new Date(),
-                u.updatedAt || new Date()
-            );
-            emailToUserID.set(u._id, id);
+            try {
+                const id = await insertUser(
+                    u._id,              // email als ID
+                    u.name,
+                    u.phone || null,
+                    u.createdAt || new Date(),
+                    u.updatedAt || new Date()
+                );
+                emailToUserID.set(u._id, id);
+                userCount++;
+                
+                if (userCount % 10 === 0) {
+                    console.log(`📊 Imported ${userCount}/${users.length} users`);
+                }
+            } catch (error) {
+                console.error(`⚠️ Skipping user ${u._id} due to error:`, error.message);
+            }
         }
+        console.log(`✅ Successfully imported ${userCount} users`);
 
         // 2. Beziehungen, Likes, Messages, Friends
         for (const u of users) {
