@@ -1,0 +1,16 @@
+{
+  "name": "letsmeet",
+  "version": "1.0.0",
+  "description": "Ihr Unternehmen hat eine neue Kundin gewonnen: die _Let’s Meet GmbH_, die eine Dating- und Meeting-Plattform betreibt.\r Ihr Unternehmen soll die Dating-App der Kundin weiterentwickeln. Leider erfolgte die Trennung vom vorigen IT-Dienstleister im Streit und nicht reibungsfrei, sodass die Kundin keinen Zugriff auf die bestehenden Datenbanken hat. Es liegt lediglich ein Datenbank-Dump in Form einer Excel-Datei vor, die die Inhalte aller Tabellen erfasst. Außerdem gibt es einen Backup einer MongoDB sowie eine XML-Datei mit einigen Daten.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^6.18.0",
+    "pg": "^8.16.3"
+  }
+}
