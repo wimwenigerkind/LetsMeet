@@ -28,7 +28,6 @@ CREATE TABLE "addresses" (
   "house_number" varchar(20),
   "postal_code" varchar(10),
   "city" varchar(100),
-  "is_primary" boolean DEFAULT false,
   "created_at" timestamp DEFAULT (now())
 );
 
