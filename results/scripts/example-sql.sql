@@ -153,3 +153,5 @@ WHERE user_id = (SELECT id FROM users WHERE email = 'tsanaklidou.elina@1mal1.te'
 -- Am Ende User löschen
 DELETE FROM users
 WHERE email = 'tsanaklidou.elina@1mal1.te';
+
+-- More https://github.com/wimwenigerkind/LetsMeet/tree/feature/NTR-create-backend/backend/routes
